@@ -15,8 +15,6 @@ namespace UIF
         [SerializeField] string pageName = "";
         [SerializeField] float pageWideTweenTime = 0.35f;
         [SerializeField] bool dynamicPage = false;
-        [SerializeField, HideInInspector] internal Selectable selectedElement = null;
-        [SerializeField, HideInInspector] internal List<Selectable> multiSelectedElements = null;
         List<UIPageElement> elements = null;
         TweenerCore<Vector3, Vector3, VectorOptions> showTween = null, hideTween = null;
         Vector3 initLocalScale;
@@ -34,7 +32,7 @@ namespace UIF
             {
                 _gameObject.SetActive(true);
             }
-            elements = this.GetElement<UIPageElement>();
+            elements = this.GetElements<UIPageElement>();
             if (elements != null && elements.Count > 0)
             {
                 for (int i = 0; i < elements.Count; i++)
@@ -118,7 +116,7 @@ namespace UIF
         {
             var elemGObject = Instantiate(elementPrefab.gameObject) as GameObject;
             elemGObject.transform.SetParent(group.transform, true);
-            elements = this.GetElement<UIPageElement>();
+            elements = this.GetElements<UIPageElement>();
             dynamicPage = true;
             //todo animation
         }

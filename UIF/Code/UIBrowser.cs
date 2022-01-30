@@ -57,8 +57,15 @@ namespace UIF
             page.Open(useAnimation);
         }
 
+        //dynamic hole ki ki hobe. register/unregister? 
+        //todo, get element by tag like web
         //r&d on game UI
         //cross, back, forward (UX implication)
+        //open homepage?
+        //Create UIPage, UIElement scripts by context menu
+        //Editor code for "Create UI Browser"
+        //Potential for server side execution?
+        //Redesign-->Browser runs pages-->page runs "UIActor"-->UIActor runs "UIPageElement"
 
 
         internal void LoadPagesifReq()

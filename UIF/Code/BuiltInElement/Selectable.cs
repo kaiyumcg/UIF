@@ -7,13 +7,14 @@ using UnityEngine.Events;
 
 namespace UIF
 {
-    public class Selectable : UIPageElement, IPointerClickHandler, IPointerEnterHandler
+    public class Selectable : UIPageElementFeature, IPointerClickHandler, IPointerEnterHandler
     {
-        [SerializeField] protected SelectionMode mode = SelectionMode.OnlyOneCanbeSelected;
+        [SerializeField] protected SelectionMode mode = SelectionMode.OnlyOneCanBeSelected;
         [SerializeField] protected SelectionInputAction inputMode = SelectionInputAction.Click;
         [SerializeField] protected SelectionAction actionToDo = SelectionAction.ShowHideGameObject;
         [SerializeField] List<GameObject> objectVisibilityForSelection;
         [SerializeField] List<ColoredSelection> selectableGraphics;
+        [SerializeField] ComponentSelection selectionComponents;
         [SerializeField] float appearTweenDuration = 0.3f;
         public UnityEvent onSelect, onDeselect;
         bool isSelected = false;
@@ -27,15 +28,19 @@ namespace UIF
             {
                 selectableGraphics.ApplyColorAll(isSelected, appearTweenDuration);
             }
-            else
+            else if (actionToDo == SelectionAction.ShowHideGameObject)
             {
                 objectVisibilityForSelection.SetActiveAll(isSelected);
             }
+            else if (actionToDo == SelectionAction.EnableDisableComponent)
+            {
+                if (selectionComponents != null) { selectionComponents.Apply(isSelected); }
+            }
         }
 
-        protected internal override void OnInit(UIPage owner)
+        protected internal override void OnInit(UIPage owner, UIPageElement ownerElement)
         {
-            base.OnInit(owner);
+            base.OnInit(owner, ownerElement);
             isSelected = false;
             isInputFrozen = false;
             if (selectableGraphics == null) { selectableGraphics = new List<ColoredSelection>(); }
@@ -57,21 +62,21 @@ namespace UIF
         
         public void Select()
         {
-            if (mode == SelectionMode.OnlyOneCanbeSelected)
+            if (mode == SelectionMode.OnlyOneCanBeSelected)
             {
-                var currentlySelected = Owner.selectedElement;
+                var currentlySelected = OwnerPage.selectedElement;
                 if (currentlySelected != null)
                 {
                     currentlySelected.ClearSelection();
                 }
-                Owner.selectedElement = this;
+                OwnerPage.selectedElement = this;
             }
             else
             {
-                if (Owner.multiSelectedElements == null) { Owner.multiSelectedElements = new List<Selectable>(); }
-                if (Owner.multiSelectedElements.Contains(this) == false)
+                if (OwnerPage.multiSelectedElements == null) { OwnerPage.multiSelectedElements = new List<Selectable>(); }
+                if (OwnerPage.multiSelectedElements.Contains(this) == false)
                 {
-                    Owner.multiSelectedElements.Add(this);
+                    OwnerPage.multiSelectedElements.Add(this);
                 }
             }
 

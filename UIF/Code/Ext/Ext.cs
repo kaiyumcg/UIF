@@ -55,8 +55,7 @@ namespace UIF
             }
         }
 
-        //todo, get element by tag like web
-        public static List<T> GetElement<T>(this UIPage page) where T : UIPageElement
+        public static List<T> GetElements<T>(this UIPage page) where T : UIPageElement
         {
             List<T> result = new List<T>();
             UpdateList(page._Transform, ref result);
@@ -74,6 +73,36 @@ namespace UIF
                         if (uiPage != null && uiPage != page)
                         {
                             //other page, ignore
+                        }
+                        else
+                        {
+                            if (result == null) { result = new List<T>(); }
+                            result.Add(tcom);
+                            UpdateList(tChild, ref result);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static List<T> GetFeatures<T>(this UIPageElement element) where T : UIPageElementFeature
+        {
+            List<T> result = new List<T>();
+            UpdateList(element._Transform, ref result);
+            return result;
+            void UpdateList<T>(Transform t, ref List<T> result) where T : Behaviour
+            {
+                var count = t.childCount;
+                for (int i = 0; i < count; i++)
+                {
+                    var tChild = t.GetChild(i);
+                    var tcom = tChild.GetComponent<T>();
+                    var uiElement = tChild.GetComponent<UIPageElement>();
+                    if (tcom != null)
+                    {
+                        if (uiElement != null && uiElement != element)
+                        {
+                            //other element, ignore
                         }
                         else
                         {

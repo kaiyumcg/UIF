@@ -6,7 +6,7 @@ using System;
 
 namespace UIF
 {
-    public class DisabilityEffect : UIPageElement
+    public class DisabilityEffect : UIPageElementFeature
     {
         [SerializeField] Color disableColor = Color.gray;
         [SerializeField] float tweenDuration = 0.2f;

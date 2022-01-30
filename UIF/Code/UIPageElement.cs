@@ -1,15 +1,16 @@
+using DG.Tweening.Core;
+using DG.Tweening;
+using DG.Tweening.Plugins.Options;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 
 namespace UIF
 {
     public class UIPageElement : MonoBehaviour
     {
+        [SerializeField, HideInInspector] internal Selectable selectedElement = null;
+        [SerializeField, HideInInspector] internal List<Selectable> multiSelectedElements = null;
         protected internal virtual void OnInit(UIPage owner)
         {
             this.owner = owner;
@@ -18,7 +19,7 @@ namespace UIF
             initLocalScale = _transform.localScale;
         }
         protected internal virtual void OnOpenOwnerPage() { }
-        protected internal virtual IEnumerator OnOpenOwnerPageAsync() 
+        protected internal virtual IEnumerator OnOpenOwnerPageAsync()
         {
             if (useTweenOnPageOpen)
             {
@@ -41,10 +42,10 @@ namespace UIF
         [SerializeField] bool useTweenOnPageOpen = true;
         [SerializeField] float appearenceTweenDuration = 0.3f;
         internal bool WaitForOpen { get { return waitForOpen; } }
-        protected UIPage Owner { get { return owner; } }
-        protected Transform _Transform { get { return _transform; } }
-        protected GameObject _GameObject { get { return _gameObject; } }
-        protected Vector3 InitLocalScale { get { return initLocalScale; } }
+        public UIPage Owner { get { return owner; } }
+        public Transform _Transform { get { return _transform; } }
+        public GameObject _GameObject { get { return _gameObject; } }
+        public Vector3 InitLocalScale { get { return initLocalScale; } }
 
         internal void SetActiveUI(bool activate)
         {
