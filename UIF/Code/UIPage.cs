@@ -6,24 +6,39 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System;
+using UnityEngine.Events;
 
 namespace UIF
 {
     [DisallowMultipleComponent]
+    [AddComponentMenu("UIF/UI Page")]
     public class UIPage : MonoBehaviour
     {
         [SerializeField] string pageName = "";
+        [SerializeField] List<UITag> tags = null;
         [SerializeField] float pageWideTweenTime = 0.35f;
         [SerializeField] bool dynamicPage = false;
-        List<UIPageElement> elements = null;
+        [SerializeField] List<UIPageElement> elements = null;
+        [SerializeField] bool overrideDefaultTween = false;
+
+        [SerializeField, HideInInspector] internal Selectable selectedFeature = null;
+        [SerializeField, HideInInspector] internal List<Selectable> multiSelectedFeatures = null;
+        [SerializeField, HideInInspector] internal bool editDefaultSetting = false, eventEdit = false;
+        [SerializeField] public UnityEvent onInit, onOpen, onClose, onActivate, onDeactivate;
         TweenerCore<Vector3, Vector3, VectorOptions> showTween = null, hideTween = null;
         Vector3 initLocalScale;
         Transform _transform = null;
         GameObject _gameObject = null;
         bool opened = false, inTransition = false;
 
-        [SerializeField, HideInInspector] internal Selectable selectedFeature = null;
-        [SerializeField, HideInInspector] internal List<Selectable> multiSelectedFeatures = null;
+        public Transform _Transform { get { return _transform; } }
+        public GameObject _GameObject { get { return _gameObject; } }
+        public Vector3 PageLocalScale { get { return initLocalScale; } }
+        public bool IsOpened { get { return opened; } }
+        public bool IsInTransition { get { return inTransition; } }
+        public bool IsPageDynamic { get { return dynamicPage; } }
+        public string PageName { get { return pageName; } }
+        internal List<UITag> Tags { get { return tags; } }
 
         public void ClearAllSelectedFeatures()
         {
@@ -39,6 +54,127 @@ namespace UIF
             }
         }
 
+        internal void LoadElements()
+        {
+            var curElems = this.GetElements<UIPageElement>();
+            Util.AddAndMakeOverallUnique(curElems, ref elements);
+        }
+
+        public List<T> GetElements<T>() where T : UIPageElement
+        {
+            return this.GetComps<T, UIPage>();
+        }
+
+        #region Getter
+        public List<T> GetElementsFast<T>() where T : UIPageElement
+        {
+            List<T> result = new List<T>();
+            if (elements != null && elements.Count > 0)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    var elem = elements[i];
+                    if (elem == null) { continue; }
+                    if (elem.GetType() == typeof(T))
+                    {
+                        T tElem = (T)(UIPageElement)elem;
+                        result.Add(tElem);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public T GetElementByTag<T>(UITag tag) where T : UIPageElement
+        {
+            T result = null;
+            if (elements != null && elements.Count > 0)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    var elem = elements[i];
+                    if (elem == null || elem.Tags == null || elem.Tags.Count == 0) { continue; }
+                    if (elem.GetType() == typeof(T) && elem.Tags.Contains(tag))
+                    {
+                        T tElem = (T)(UIPageElement)elem;
+                        result = tElem;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public T GetElementByTags<T>(params UITag[] tags) where T : UIPageElement
+        {
+            T result = null;
+            if (elements != null && elements.Count > 0)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    var elem = elements[i];
+                    if (elem == null) { continue; }
+                    if (elem.GetType() == typeof(T) && HasFoundTags(tags, elem))
+                    {
+                        T tElem = (T)(UIPageElement)elem;
+                        result = tElem;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public List<T> GetElementsByTags<T>(params UITag[] tags) where T : UIPageElement
+        {
+            List<T> result = new List<T>();
+            if (elements != null && elements.Count > 0)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    var elem = elements[i];
+                    if (elem == null) { continue; }
+                    if (elem.GetType() == typeof(T) && HasFoundTags(tags, elem))
+                    {
+                        T tElem = (T)(UIPageElement)elem;
+                        result.Add(tElem);
+                    }
+                }
+            }
+            return result;
+        }
+
+        bool HasFoundTags(UITag[] tags_arg, UIPageElement elem)
+        {
+            bool found = true;
+            if (elem.Tags != null && elem.Tags.Count > 0)
+            {
+                if (tags_arg != null && tags_arg.Length > 0)
+                {
+                    for (int i = 0; i < tags_arg.Length; i++)
+                    {
+                        if (tags_arg[i] == null) { continue; }
+                        if (elem.Tags.Contains(tags_arg[i]) == false)
+                        {
+                            found = false;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    found = false;
+                }
+            }
+            else
+            {
+                found = false;
+            }
+            return found;
+        }
+
+        #endregion
+
         protected internal virtual void OnInit() 
         {
             _transform = transform;
@@ -49,7 +185,7 @@ namespace UIF
             {
                 _gameObject.SetActive(true);
             }
-            elements = this.GetElements<UIPageElement>();
+            LoadElements();
             if (elements != null && elements.Count > 0)
             {
                 for (int i = 0; i < elements.Count; i++)
@@ -64,26 +200,23 @@ namespace UIF
             }
             _gameObject.SetActive(false);
             opened = inTransition = false;
+            onInit?.Invoke();
         }
-
-        protected internal virtual void OnOpen(bool withAnimation) { }
+        protected internal virtual void OnOpen(bool withAnimation) { onOpen?.Invoke(); }
         protected internal virtual IEnumerator OnOpenAsync(bool withAnimation) { yield return null; }
-
-        protected internal virtual void OnClose(bool withAnimation) { }
+        protected internal virtual void OnClose(bool withAnimation) { onClose?.Invoke(); }
         protected internal virtual IEnumerator OnCloseAsync(bool withAnimation) { yield return null; }
-
-        protected internal virtual void OnActivate() { }
-        protected internal virtual void OnDeactivate() { }
-
+        protected internal virtual void OnActivate() { onActivate?.Invoke(); }
+        protected internal virtual void OnDeactivate() { onDeactivate?.Invoke(); }
         protected internal virtual void OnTick(Vector2 deltaInputPosition, Vector2 smoothDeltaInputPosition) { }
-
-        public Transform _Transform { get { return _transform; } }
-        public GameObject _GameObject { get { return _gameObject; } }
-        public Vector3 PageLocalScale { get { return initLocalScale; } }
-        public bool IsOpened { get { return opened; } }
-        public bool IsInTransition { get { return inTransition; } }
-        public bool IsPageDynamic { get { return dynamicPage; } }
-        public string PageName { get { return pageName; } }
+        protected virtual IEnumerator DefineOverridenTweenForOpen(Action OnDone) 
+        { 
+            yield return null; 
+        }
+        protected virtual IEnumerator DefineOverridenTweenForClose(Action OnDone) 
+        { 
+            yield return null;
+        }
 
         void Cleaup()
         {
@@ -95,7 +228,7 @@ namespace UIF
                 for (int i = 0; i < elements.Count; i++)
                 {
                     var elem = elements[i];
-                    elem.StopAllCoroutines();
+                    elem.Cleanup();
                 }
             }
         }
@@ -115,6 +248,7 @@ namespace UIF
             else { OnDeactivate(); }
         }
 
+        #region DynamicUI
         public void AddItemToLayoutGroupFromPrefab(LayoutGroup group, LayoutElement elementPrefab)
         {
             var elemGObject = Instantiate(elementPrefab.gameObject) as GameObject;
@@ -133,11 +267,13 @@ namespace UIF
         {
             //todo
         }
+        #endregion
 
         Coroutine randomSelectionHandle = null;
         public void ChoseSelectableRandom(List<Selectable> selectables, 
             Action<Selectable> OnFinallySelected, float delayAmount = 0.2f, float within = 2f)
         {
+            Cleaup();
             if (selectables == null) { selectables = new List<Selectable>(); }
             selectables.RemoveAll((sel) => { return sel == null; });
             if (selectables == null) { selectables = new List<Selectable>(); }
@@ -187,6 +323,11 @@ namespace UIF
 
         public void Open(bool withAnimation = false)
         {
+            Open(null, withAnimation);
+        }
+
+        public void Open(Action OnComplete = null, bool withAnimation = false)
+        {
             if (opened || inTransition) { return; }
             opened = true;
             inTransition = true;
@@ -195,13 +336,28 @@ namespace UIF
             if (withAnimation)
             {
                 _transform.localScale = Vector3.zero;
-                showTween = _transform.DOScale(1.0f, pageWideTweenTime).OnComplete(() =>
+                if (overrideDefaultTween)
                 {
-                    ShowInternal(() =>
+                    StartCoroutine(DefineOverridenTweenForOpen(() =>
                     {
-                        inTransition = false;
+                        ShowInternal(() =>
+                        {
+                            inTransition = false;
+                            OnComplete?.Invoke();
+                        });
+                    }));
+                }
+                else
+                {
+                    showTween = _transform.DOScale(1.0f, pageWideTweenTime).OnComplete(() =>
+                    {
+                        ShowInternal(() =>
+                        {
+                            inTransition = false;
+                            OnComplete?.Invoke();
+                        });
                     });
-                });
+                }
             }
             else
             {
@@ -209,6 +365,7 @@ namespace UIF
                 ShowInternal(() =>
                 {
                     inTransition = false;
+                    OnComplete?.Invoke();
                 });
             }
 
@@ -225,7 +382,7 @@ namespace UIF
                         {
                             var elem = elements[i];
                             elem.OnOpenOwnerPage();
-                            if (elem.WaitForOpen)
+                            if (elem.WaitForPageOpen)
                             {
                                 yield return elem.StartCoroutine(elem.OnOpenOwnerPageAsync());
                             }
@@ -242,6 +399,11 @@ namespace UIF
 
         public void Close(bool withAnimation = false)
         {
+            Close(null, withAnimation);
+        }
+
+        public void Close(Action OnComplete = null, bool withAnimation = false)
+        {
             if (!opened || inTransition) { return; }
             opened = false;
             inTransition = true;
@@ -252,30 +414,43 @@ namespace UIF
                 {
                     _gameObject.SetActive(true);
                 }
-                hideTween = _transform.DOScale(0.0f, pageWideTweenTime).OnComplete(() =>
+                if (overrideDefaultTween)
                 {
-                    HideInternal(() =>
+                    StartCoroutine(DefineOverridenTweenForClose(() =>
                     {
-                        inTransition = false;
+                        HideInternal(() =>
+                        {
+                            inTransition = false;
+                            OnComplete?.Invoke();
+                        });
+                    }));
+                }
+                else
+                {
+                    hideTween = _transform.DOScale(0.0f, pageWideTweenTime).OnComplete(() =>
+                    {
+                        HideInternal(() =>
+                        {
+                            inTransition = false;
+                            OnComplete?.Invoke();
+                        });
                     });
-                });
+                }
             }
             else
             {
                 HideInternal(() =>
                 {
                     inTransition = false;
+                    OnComplete?.Invoke();
                 });
             }
 
             void HideInternal(Action OnComplete)
             {
                 StartCoroutine(DoHideCB_(OnComplete));
-                IEnumerator DoHideCB_(Action OnComplete)
+                IEnumerator DoHideCB_(Action OnCompleteArg)
                 {
-                    OnClose(withAnimation);
-                    yield return StartCoroutine(OnCloseAsync(withAnimation));
-                    OnComplete?.Invoke();
                     if (elements != null && elements.Count > 0)
                     {
                         for (int i = 0; i < elements.Count; i++)
@@ -284,11 +459,14 @@ namespace UIF
                             elem.OnCloseOwnerPage();
                         }
                     }
+                    OnClose(withAnimation);
+                    yield return StartCoroutine(OnCloseAsync(withAnimation));
                     if (_gameObject.activeInHierarchy)
                     {
                         _gameObject.SetActive(false);
                     }
                     _transform.localScale = initLocalScale;
+                    OnCompleteArg?.Invoke();
                 }
             }
         }

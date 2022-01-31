@@ -1,31 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Text.RegularExpressions;
 
 namespace UIF
 {
     public static class Ext
     {
-        internal static List<string> GetPagesName(this string url)
-        {
-            if (url.Contains("http://")) { url = url.Replace("http://", ""); }
-            if (url.Contains("ui://")) { url = url.Replace("ui://", ""); }
-            if (url.Contains(@"\")) { url = url.Replace(@"\","/"); }
-            var parts = Regex.Split(url, "/");
-            List<string> pageNames = new List<string>();
-            if (parts != null && parts.Length > 0)
-            {
-                for (int i = 0; i < parts.Length; i++)
-                {
-                    var part = parts[i];
-                    if (string.IsNullOrEmpty(part) || string.IsNullOrWhiteSpace(part)) { continue; }
-                    pageNames.Add(part);
-                }
-            }
-            return pageNames;
-        }
-
         internal static void SetActiveAll(this List<GameObject> gameObjects, bool active)
         {
             if (gameObjects != null && gameObjects.Count > 0)
@@ -55,58 +35,28 @@ namespace UIF
             }
         }
 
-        public static List<T> GetElements<T>(this UIPage page) where T : UIPageElement
+        internal static List<Comp> GetComps<Comp, Scrpt>(this Scrpt script) where Comp : MonoBehaviour where Scrpt : MonoBehaviour
         {
-            List<T> result = new List<T>();
-            UpdateList(page._Transform, ref result);
+            List<Comp> result = new List<Comp>();
+            UpdateList(script.transform, ref result);
             return result;
-            void UpdateList(Transform t, ref List<T> result)
+            void UpdateList(Transform t, ref List<Comp> result)
             {
                 var count = t.childCount;
                 for (int i = 0; i < count; i++)
                 {
                     var tChild = t.GetChild(i);
-                    var tcom = tChild.GetComponent<T>();
-                    var uiPage = tChild.GetComponent<UIPage>();
+                    var tcom = tChild.GetComponent<Comp>();
+                    var thisScrpt = tChild.GetComponent<Scrpt>();
                     if (tcom != null)
                     {
-                        if (uiPage != null && uiPage != page)
+                        if (thisScrpt != null && thisScrpt != script)
                         {
-                            //other page, ignore
+                            //other Script ownership, ignore
                         }
                         else
                         {
-                            if (result == null) { result = new List<T>(); }
-                            result.Add(tcom);
-                            UpdateList(tChild, ref result);
-                        }
-                    }
-                }
-            }
-        }
-
-        public static List<T> GetFeatures<T>(this UIPageElement element) where T : UIPageElementFeature
-        {
-            List<T> result = new List<T>();
-            UpdateList(element._Transform, ref result);
-            return result;
-            void UpdateList(Transform t, ref List<T> result)
-            {
-                var count = t.childCount;
-                for (int i = 0; i < count; i++)
-                {
-                    var tChild = t.GetChild(i);
-                    var tcom = tChild.GetComponent<T>();
-                    var uiElement = tChild.GetComponent<UIPageElement>();
-                    if (tcom != null)
-                    {
-                        if (uiElement != null && uiElement != element)
-                        {
-                            //other element, ignore
-                        }
-                        else
-                        {
-                            if (result == null) { result = new List<T>(); }
+                            if (result == null) { result = new List<Comp>(); }
                             result.Add(tcom);
                             UpdateList(tChild, ref result);
                         }

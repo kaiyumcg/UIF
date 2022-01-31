@@ -1,0 +1,71 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UIF;
+using System;
+
+/// <summary>
+/// "Thing" that Holds all the 'Page UI Element Features'. It also manages the execution of those. 
+/// </summary>
+public class #SCRIPTNAME# : UIPageElement
+{
+    protected override void OnInit(UIPage owner)
+    {
+        base.OnInit(owner);
+        //Do not delete the above line!!
+        //initialization work. Happens at the first frame of Browser or the instant dynamic owner page gets spawned.
+    }
+
+    protected override IEnumerator DefineOverridenTweenForAppear(Action OnDone)
+    {
+        yield return null;
+        //If element tween is overriden in inspector, you define tween here.
+        //At the end, call 'OnDone'
+    }
+
+    protected override IEnumerator DefineOverridenTweenForHide(Action OnDone)
+    {
+        yield return null;
+        //If element tween is overriden in inspector, you define tween here.
+        //At the end, call 'OnDone'
+    }
+
+    protected override void OnActivate()
+    {
+        base.OnActivate();
+        //what to do when page is activated. Do not delete the above line!!
+    }
+
+    protected override void OnDeactivate()
+    {
+        base.OnDeactivate();
+        //what to do when page is deactivated. Do not delete the above line!!
+    }
+
+    protected override void OnOpenOwnerPage()
+    {
+        base.OnOpenOwnerPage();
+        //what to do when owner page is opened. Do not delete the above line!!
+    }
+
+    protected override void OnCloseOwnerPage()
+    {
+        base.OnCloseOwnerPage();
+        //what to do when owner page is opened. Do not delete the above line!!
+    }
+
+    protected override IEnumerator OnOpenOwnerPageAsync()
+    {
+        yield return StartCoroutine(base.OnOpenOwnerPageAsync());
+        //what to do when owner page is opened.
+        //If "WaitForOpen" is turned on then execution completion of the coroutine holds 'Open' process for owner UI page.
+    }
+
+    protected override IEnumerator OnCloseOwnerPageAsync()
+    {
+        yield return StartCoroutine(base.OnCloseOwnerPageAsync());
+        //what to do when owner page is closed.
+        //If "WaitForOpen" is turned on then execution completion of the coroutine holds 'Close' process for owner UI page.
+    }
+}

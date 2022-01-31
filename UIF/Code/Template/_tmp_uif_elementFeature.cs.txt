@@ -1,0 +1,87 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UIF;
+
+/// <summary>
+/// UI Page Feature elements provide a single feature for the owner 'Page UI Element' which 
+/// resides inside a 'UI Page', that in turns lives within 'UIBrowser'. 
+/// You can have unlimited about of such features attached on same or 
+/// any child(which is not inside another 'Page UI Element') gameobject of the owner 'Page UI Element'.
+/// </summary>
+public class #SCRIPTNAME# : UIPageElementFeature
+{
+    protected override void OnInit(UIPage owner, UIPageElement element)
+    {
+        base.OnInit(owner, element);
+        //Do not delete the above line!!
+        //initialization work. Happens at the first frame of Browser or the instant dynamic owner page/elements get spawned.
+    }
+
+    protected override void OnOpenOwnerPage()
+    {
+        base.OnOpenOwnerPage();
+        //Do not delete the above line!!
+        //what to do when owner page is opened
+    }
+
+    protected override IEnumerator OnOpenOwnerPageAsync()
+    {
+        yield return null;
+        //what to do when owner page is opened
+        //Page will not open until execution ends with this coroutine!
+    }
+
+    protected override void OnCloseOwnerPage()
+    {
+        base.OnCloseOwnerPage();
+        //Do not delete the above line!!
+        //what to do when owner page is closed
+    }
+
+    protected override IEnumerator OnCloseOwnerPageAsync()
+    {
+        yield return null;
+        //what to do when owner page is closed.
+        //Page will not close until execution ends with this coroutine!
+    }
+
+    protected override void OnAppearOwnerElement()
+    {
+        base.OnAppearOwnerElement();
+        //Do not delete the above line!!
+        //what to do when owner Page UI Element is appeared.
+    }
+
+    protected override IEnumerator OnAppearOwnerElementAsync()
+    {
+        yield return null;
+        //what to do when owner Page UI Element is appeared.
+    }
+
+    protected override void OnHideOwnerElement()
+    {
+        base.OnHideOwnerElement();
+        //Do not delete the above line!!
+        //what to do when owner Page UI Element is disappeared.
+    }
+
+    protected override IEnumerator OnHideOwnerElementAsync()
+    {
+        yield return null;
+        //what to do when owner Page UI Element is disappeared.
+    }
+
+    protected override void OnActivate()
+    {
+        base.OnActivate();
+        //what to do when feature is activated due to a call to this directly or due to owner element/page activation. Do not delete the above line!!
+    }
+
+    protected override void OnDeactivate()
+    {
+        base.OnDeactivate();
+        //what to do when feature is deactivated due to a call to this directly or due to owner element/page deactivation. Do not delete the above line!!
+    }
+}

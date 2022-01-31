@@ -1,0 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UIF;
+
+/// <summary>
+/// Browser script holds all UI Pages inside of it. This also manages execution of UI pages
+/// </summary>
+public class #SCRIPTNAME# : UIBrowser
+{
+    protected override void OnInit()
+    {
+        base.OnInit();
+        //work at initialization. Do not delete the above line!!
+    }
+
+    protected override void OnTick()
+    {
+        base.OnTick();
+        //called every frame if the browser support ticking. Do not delete the above line!!
+    }
+}

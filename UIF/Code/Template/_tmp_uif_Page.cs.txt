@@ -1,0 +1,75 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UIF;
+using System;
+
+/// <summary>
+/// UI Page holds all 'Page UI Elements' inside of it. This also manages execution of 'Page UI Element's.
+/// </summary>
+public class #SCRIPTNAME# : UIPage
+{
+    protected override void OnInit()
+    {
+        base.OnInit();
+        //work at initialization. Do not delete the above line!!
+    }
+
+    protected override void OnTick(Vector2 deltaInputPosition, Vector2 smoothDeltaInputPosition)
+    {
+        base.OnTick(deltaInputPosition, smoothDeltaInputPosition);
+        //called every frame if the browser support ticking. Do not delete the above line!!
+    }
+
+    protected override IEnumerator DefineOverridenTweenForClose(Action OnDone)
+    {
+        yield return null;
+        //If page tween is overriden in inspector, you define tween here.
+        //At the end, call 'OnDone'
+    }
+
+    protected override IEnumerator DefineOverridenTweenForOpen(Action OnDone)
+    {
+        yield return null;
+        //If page tween is overriden in inspector, you define tween here.
+        //At the end, call 'OnDone'
+    }
+
+    protected override void OnActivate()
+    {
+        base.OnActivate();
+        //what to do when page is activated. Do not delete the above line!!
+    }
+
+    protected override void OnDeactivate()
+    {
+        base.OnDeactivate();
+        //what to do when page is deactivated. Do not delete the above line!!
+    }
+
+    protected override void OnOpen(bool withAnimation)
+    {
+        base.OnOpen(withAnimation);
+        //what to do when page is opened. Do not delete the above line!!
+    }
+
+    protected override IEnumerator OnOpenAsync(bool withAnimation)
+    {
+        yield return null;
+        //what to do when page is opened.
+        //Page will not open until execution ends with this coroutine!
+    }
+
+    protected override void OnClose(bool withAnimation)
+    {
+        base.OnClose(withAnimation);
+        //what to do when page is closed. Do not delete the above line!!
+    }
+
+    protected override IEnumerator OnCloseAsync(bool withAnimation)
+    {
+        yield return null;
+        //what to do when page is closed. Page will not close until execution ends with this coroutine!
+    }
+}
