@@ -22,6 +22,23 @@ namespace UIF
         GameObject _gameObject = null;
         bool opened = false, inTransition = false;
 
+        [SerializeField, HideInInspector] internal Selectable selectedFeature = null;
+        [SerializeField, HideInInspector] internal List<Selectable> multiSelectedFeatures = null;
+
+        public void ClearAllSelectedFeatures()
+        {
+            if (selectedFeature != null) { selectedFeature.ClearSelection(); }
+            if (multiSelectedFeatures != null && multiSelectedFeatures.Count > 0)
+            {
+                for (int i = 0; i < multiSelectedFeatures.Count; i++)
+                {
+                    var elem = multiSelectedFeatures[i];
+                    if (elem == null) { continue; }
+                    elem.ClearSelection();
+                }
+            }
+        }
+
         protected internal virtual void OnInit() 
         {
             _transform = transform;
@@ -67,20 +84,6 @@ namespace UIF
         public bool IsInTransition { get { return inTransition; } }
         public bool IsPageDynamic { get { return dynamicPage; } }
         public string PageName { get { return pageName; } }
-
-        public void ClearAllSelectedItems()
-        {
-            if (selectedElement != null) { selectedElement.ClearSelection(); }
-            if (multiSelectedElements != null && multiSelectedElements.Count > 0)
-            {
-                for (int i = 0; i < multiSelectedElements.Count; i++)
-                {
-                    var elem = multiSelectedElements[i];
-                    if (elem == null) { continue; }
-                    elem.ClearSelection();
-                }
-            }
-        }
 
         void Cleaup()
         {

@@ -13,9 +13,9 @@ namespace UIF
         MaskableGraphic ui_graphic = null;
         Color enabledColor;
 
-        protected internal override void OnInit(UIPage owner)
+        protected internal override void OnInit(UIPage owner, UIPageElement ownerElement)
         {
-            base.OnInit(owner);
+            base.OnInit(owner, ownerElement);
             ui_graphic = GetComponent<MaskableGraphic>();
             if (ui_graphic != null)
             {

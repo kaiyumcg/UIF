@@ -9,6 +9,12 @@ namespace UIF
     public enum SelectionInputAction { TouchOrEnter = 0, Click = 1 }
     public enum SelectionAction { ShowHideGameObject = 0, ModifyColor = 1, EnableDisableComponent = 2 }
 
+    public class CompletionHandle
+    {
+        public float progress;
+        public bool completed;
+    }
+
     [System.Serializable]
     internal class ColoredSelection
     {

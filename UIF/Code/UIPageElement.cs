@@ -9,16 +9,45 @@ namespace UIF
 {
     public class UIPageElement : MonoBehaviour
     {
-        [SerializeField, HideInInspector] internal Selectable selectedElement = null;
-        [SerializeField, HideInInspector] internal List<Selectable> multiSelectedElements = null;
+        [SerializeField, HideInInspector] List<UIPageElementFeature> features = null;
+
+        CompletionHandle appeared = null, hidden = null;
+        public CompletionHandle Appeared { get { return appeared; } }
+        public CompletionHandle Hidden { get { return hidden; } }
+
         protected internal virtual void OnInit(UIPage owner)
         {
             this.owner = owner;
             _transform = transform;
             _gameObject = gameObject;
             initLocalScale = _transform.localScale;
+            features = this.GetFeatures<UIPageElementFeature>();
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    var ftObj = ft.gameObject;
+                    var activFlag = ftObj.activeInHierarchy;
+                    ftObj.SetActive(true);
+                    ft.OnInit(owner, this);
+                    ftObj.SetActive(activFlag);
+                }
+            }
         }
-        protected internal virtual void OnOpenOwnerPage() { }
+        protected internal virtual void OnOpenOwnerPage() 
+        {
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    ft.OnOpenOwnerPage();
+                }
+            }
+        }
         protected internal virtual IEnumerator OnOpenOwnerPageAsync()
         {
             if (useTweenOnPageOpen)
@@ -29,8 +58,29 @@ namespace UIF
             {
                 yield return null;
             }
+
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    StartCoroutine(ft.OnOpenOwnerPageAsync());
+                }
+            }
         }
-        protected internal virtual void OnCloseOwnerPage() { }
+        protected internal virtual void OnCloseOwnerPage() 
+        {
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    ft.OnCloseOwnerPage();
+                }
+            }
+        }
         protected virtual void OnActivate() { }
         protected virtual void OnDeactivate() { }
         Transform _transform;
@@ -51,11 +101,26 @@ namespace UIF
         {
             if (activate) { OnActivate(); }
             else { OnDeactivate(); }
+
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    ft.SetActiveUI(activate);
+                }
+            }
         }
 
         public void AppearElement(bool useAnimation)
         {
             if (tween != null && tween.IsPlaying()) { tween.Kill(); }
+            if (appeared == null) { appeared = new CompletionHandle(); }
+            if (hidden == null) { hidden = new CompletionHandle(); }
+            hidden.completed = false;
+            appeared.completed = false;
+
             if (_gameObject.activeInHierarchy == false)
             {
                 _gameObject.SetActive(true);
@@ -65,13 +130,35 @@ namespace UIF
             if (useAnimation)
             {
                 _transform.localScale = Vector3.zero;
-                tween = _transform.DOScale(initLocalScale, appearenceTweenDuration);
+                tween = _transform.DOScale(initLocalScale, appearenceTweenDuration).OnComplete(() =>
+                {
+                    appeared.completed = true;
+                });
+            }
+            else
+            {
+                appeared.completed = true;
+            }
+
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    ft.OnAppearOwnerElement();
+                    StartCoroutine(ft.OnAppearOwnerElementAsync());
+                }
             }
         }
 
         public void HideElement(bool useAnimation)
         {
             if (tween != null && tween.IsPlaying()) { tween.Kill(); }
+            if (appeared == null) { appeared = new CompletionHandle(); }
+            if (hidden == null) { hidden = new CompletionHandle(); }
+            appeared.completed = false;
+            hidden.completed = false;
             if (useAnimation)
             {
                 if (_gameObject.activeInHierarchy == false)
@@ -85,6 +172,7 @@ namespace UIF
                         _gameObject.SetActive(false);
                     }
                     _transform.localScale = initLocalScale;
+                    hidden.completed = true;
                 });
             }
             else
@@ -94,6 +182,17 @@ namespace UIF
                     _gameObject.SetActive(false);
                 }
                 _transform.localScale = initLocalScale;
+                hidden.completed = true;
+            }
+
+            if (features != null && features.Count > 0)
+            {
+                for (int i = 0; i < features.Count; i++)
+                {
+                    var ft = features[i];
+                    if (ft == null) { continue; }
+                    ft.OnHideOwnerElement();
+                }
             }
         }
     }

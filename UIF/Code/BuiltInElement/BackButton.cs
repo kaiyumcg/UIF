@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UIF
 {
-    public class BackButton : UIPageElementFeature
+    public class BackButton : UIPageElement
     {
         Button btn;
         [SerializeField] bool closeWithAnimation = true;

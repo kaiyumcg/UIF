@@ -64,19 +64,19 @@ namespace UIF
         {
             if (mode == SelectionMode.OnlyOneCanBeSelected)
             {
-                var currentlySelected = OwnerPage.selectedElement;
+                var currentlySelected = OwnerPage.selectedFeature;
                 if (currentlySelected != null)
                 {
                     currentlySelected.ClearSelection();
                 }
-                OwnerPage.selectedElement = this;
+                OwnerPage.selectedFeature = this;
             }
             else
             {
-                if (OwnerPage.multiSelectedElements == null) { OwnerPage.multiSelectedElements = new List<Selectable>(); }
-                if (OwnerPage.multiSelectedElements.Contains(this) == false)
+                if (OwnerPage.multiSelectedFeatures == null) { OwnerPage.multiSelectedFeatures = new List<Selectable>(); }
+                if (OwnerPage.multiSelectedFeatures.Contains(this) == false)
                 {
-                    OwnerPage.multiSelectedElements.Add(this);
+                    OwnerPage.multiSelectedFeatures.Add(this);
                 }
             }
 

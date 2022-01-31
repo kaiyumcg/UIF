@@ -60,7 +60,7 @@ namespace UIF
             List<T> result = new List<T>();
             UpdateList(page._Transform, ref result);
             return result;
-            void UpdateList<T>(Transform t, ref List<T> result) where T : Behaviour
+            void UpdateList(Transform t, ref List<T> result)
             {
                 var count = t.childCount;
                 for (int i = 0; i < count; i++)
@@ -90,7 +90,7 @@ namespace UIF
             List<T> result = new List<T>();
             UpdateList(element._Transform, ref result);
             return result;
-            void UpdateList<T>(Transform t, ref List<T> result) where T : Behaviour
+            void UpdateList(Transform t, ref List<T> result)
             {
                 var count = t.childCount;
                 for (int i = 0; i < count; i++)

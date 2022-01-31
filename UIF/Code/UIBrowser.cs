@@ -7,11 +7,14 @@ namespace UIF
     public sealed class UIBrowser : MonoBehaviour
     {
         [SerializeField] List<UIPage> pages;
-        [SerializeField] int deltaSmoothnessBufferSize = 4;
+        [SerializeField] int deltaSmoothnessBufferSize = 4;//delta positions are also needed for input control, so we are duplicating calculations
+        //then for multiple UIBrowser we have multiple of this calculation? fix it
         [SerializeField, HideInInspector] Vector2 lastMousePos;
         [SerializeField, HideInInspector] int curbID = 0;
         [SerializeField, HideInInspector] Vector2[] bDeltas;
         Vector2 curDelta, smoothDelta;
+        public Vector2 CurrentInputDeltaPosition { get { return curDelta; } }
+        public Vector2 CurrentSmoothInputDeltaPosition { get { return smoothDelta; } }
 
         private void Awake()
         {
@@ -66,7 +69,8 @@ namespace UIF
         //Editor code for "Create UI Browser"
         //Potential for server side execution?
         //Redesign-->Browser runs pages-->page runs "UIActor"-->UIActor runs "UIPageElement"
-
+        //override default tween of page, element etc
+        
 
         internal void LoadPagesifReq()
         {
