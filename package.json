@@ -12,6 +12,6 @@
   "dependencies": {
 	"com.kaiyum.unityext": "https://github.com/kaiyumcg/UnityExt.git",
 	"com.textus-games.serialized-reference-ui": "https://github.com/kaiyumcg/UnitySerializedReferenceUI.git",
-	"com.unity.textmeshpro": "3.0.6",
+	"com.unity.textmeshpro": "3.0.6"
   }
 }
