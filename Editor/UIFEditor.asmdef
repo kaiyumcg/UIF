@@ -1,8 +1,9 @@
 {
-    "name": "UIF.Editor",
+    "name": "UIFEditor",
     "rootNamespace": "",
     "references": [
-        "UIF"
+        "UIF",
+        "EditorUtil"
     ],
     "includePlatforms": [
         "Editor"

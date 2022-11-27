@@ -2,6 +2,8 @@
     "name": "UIF",
     "rootNamespace": "",
     "references": [
+        "AttributeExt",
+        "UnityExt",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.Events;
+using AttributeExt;
 
 namespace UIF
 {
@@ -12,8 +13,8 @@ namespace UIF
     public class UIPage : UIFAttachableObject
     {
         [SerializeField, HideInInspector] protected string pageName = "";
-        [SerializeField, HideInInspector, CannotEdit] internal protected List<UIPageElement> elements = null;
-        [SerializeField, HideInInspector, CannotEdit] internal protected List<UIPage> childPages = null;
+        [SerializeField, HideInInspector, CanNotEdit] internal protected List<UIPageElement> elements = null;
+        [SerializeField, HideInInspector, CanNotEdit] internal protected List<UIPage> childPages = null;
 
         bool opened = false;
         UIPage ownerPage = null;

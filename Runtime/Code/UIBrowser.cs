@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using AttributeExt;
 
 /// <summary>
 /// Todos
@@ -19,7 +20,7 @@ namespace UIF
         [SerializeField, HideInInspector] protected bool shouldTick = true;
         [SerializeField, HideInInspector] protected string homePage;
         [SerializeField, HideInInspector] public UnityEvent onOpenHomePage;
-        [SerializeField, CannotEdit, HideInInspector] internal protected List<UIPage> pages;
+        [SerializeField, CanNotEdit, HideInInspector] internal protected List<UIPage> pages;
 
         protected override void OnLoadReference()
         {

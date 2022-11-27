@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using System.IO;
+using AttributeExt;
 
 namespace UIF
 {
@@ -14,22 +15,22 @@ namespace UIF
     [System.Serializable]
     public class StringState
     {
-        [SerializeField, CannotEdit] public string key;
-        [SerializeField, CannotEdit] public string value;
+        [SerializeField, CanNotEdit] public string key;
+        [SerializeField, CanNotEdit] public string value;
     }
 
     [System.Serializable]
     public class UIFStateInfoInternal
     {
-        [SerializeField, CannotEdit] public string uniqueKey;
-        [SerializeField, CannotEdit] public UIFState state = UIFState.Hidden;
-        [SerializeField, CannotEdit] public StringState[] nameInfo;
+        [SerializeField, CanNotEdit] public string uniqueKey;
+        [SerializeField, CanNotEdit] public UIFState state = UIFState.Hidden;
+        [SerializeField, CanNotEdit] public StringState[] nameInfo;
     }
 
     [System.Serializable]
     public class UIFMasterSave
     {
-        [SerializeField, CannotEdit] public UIFStateInfoInternal[] data;
+        [SerializeField, CanNotEdit] public UIFStateInfoInternal[] data;
     }
 
     [System.Serializable]
@@ -42,8 +43,8 @@ namespace UIF
         [SerializeField] UIFStateRenderDesc stateChangeVisual;
         [SerializeField] public UnityEvent<UIFState, UIFState> onStateChange;
         [SerializeField] public UnityEvent<string, string, string> onNameStateChange;
-        [SerializeField, CannotEdit] UIFStateInfoInternal info = null;
-        [SerializeField, CannotEdit] string stateAppliedUniqueKey = "";
+        [SerializeField, CanNotEdit] UIFStateInfoInternal info = null;
+        [SerializeField, CanNotEdit] string stateAppliedUniqueKey = "";
         public event OnStateChangeFunc OnStateChange;
         public event OnNameStateChangeFunc OnNameStateChange;
         bool prepared = false;
