@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.Events;
-using AttributeExt;
+using AttributeExt2;
 
 namespace UIF
 {
@@ -12,7 +12,7 @@ namespace UIF
     public class UIPageElement : UIFAttachableObject
     {
         [SerializeField, HideInInspector] protected string elementName = "";
-        [SerializeField, HideInInspector, CanNotEdit] internal protected List<UIPageElementFeature> features = null;
+        [SerializeField, HideInInspector, ReadOnly] internal protected List<UIPageElementFeature> features = null;
         [SerializeField, HideInInspector] public UnityEvent onAppearUI, onHideUI;
 
         UIPage owner = null;

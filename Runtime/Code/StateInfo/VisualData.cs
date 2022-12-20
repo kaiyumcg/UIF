@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using AttributeExt;
+using AttributeExt2;
 
 namespace UIF
 {
